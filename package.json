@@ -2,7 +2,6 @@
   "private": true,
   "scripts": {
     "start": "concurrently -n w: npm:start:*",
-    "start:front": "umi dev",
     "start:back": "nodemon",
     "start:public": "ts-node back/public.ts",
     "build:front": "umi build",
@@ -11,9 +10,11 @@
     "schedule": "npm run build:back && node static/build/schedule.js",
     "public": "npm run build:back && node static/build/public.js",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
-    "postinstall": "umi generate tmp 2>/dev/null || true",
     "test": "umi-test",
-    "test:coverage": "umi-test --coverage"
+    "test:coverage": "umi-test --coverage",
+    "build-test": "max build",
+    "postinstall": "max setup",
+    "start:front": "max dev"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
@@ -92,10 +93,6 @@
     "@types/sockjs": "^0.3.33",
     "@types/sockjs-client": "^1.5.1",
     "@types/uuid": "^8.3.4",
-    "@umijs/plugin-antd": "^0.15.0",
-    "@umijs/plugin-esbuild": "^1.4.1",
-    "@umijs/ssr-darkreader": "^4.9.45",
-    "@umijs/test": "^3.5.21",
     "ansi-to-react": "^6.1.6",
     "antd": "^4.20.5",
     "antd-img-crop": "^4.2.3",
@@ -118,7 +115,7 @@
     "sockjs-client": "^1.6.0",
     "ts-node": "^10.6.0",
     "typescript": "^4.6.2",
-    "umi": "^3.5.21",
+    "@umijs/max": "^4.0.0",
     "umi-request": "^1.4.0",
     "vh-check": "^2.0.5",
     "webpack": "^5.70.0",

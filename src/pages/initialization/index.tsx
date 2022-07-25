@@ -116,7 +116,7 @@ const Initialization = () => {
               {config.notificationModes
                 .filter((x) => x.value !== 'closed')
                 .map((x) => (
-                  <Option value={x.value}>{x.label}</Option>
+                  <Option key={x.value} value={x.value}>{x.label}</Option>
                 ))}
             </Select>
           </Form.Item>

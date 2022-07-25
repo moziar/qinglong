@@ -17,7 +17,7 @@ import {
 import config from '@/utils/config';
 import { PageContainer } from '@ant-design/pro-layout';
 import { request } from '@/utils/http';
-import * as DarkReader from '@umijs/ssr-darkreader';
+// import * as DarkReader from '@umijs/ssr-darkreader';
 import AppModal from './appModal';
 import {
   EditOutlined,
@@ -120,26 +120,26 @@ const Setting = ({
   const [notificationInfo, setNotificationInfo] = useState<any>();
   const [logRemoveFrequency, setLogRemoveFrequency] = useState<number>();
   const [form] = Form.useForm();
-  const {
-    enable: enableDarkMode,
-    disable: disableDarkMode,
-    exportGeneratedCSS: collectCSS,
-    setFetchMethod,
-    auto: followSystemColorScheme,
-  } = DarkReader || {};
+  // const {
+  //   enable: enableDarkMode,
+  //   disable: disableDarkMode,
+  //   exportGeneratedCSS: collectCSS,
+  //   setFetchMethod,
+  //   auto: followSystemColorScheme,
+  // } = DarkReader || {};
 
   const themeChange = (e: any) => {
     const _theme = e.target.value;
     localStorage.setItem('qinglong_dark_theme', e.target.value);
-    setFetchMethod(fetch);
+    // setFetchMethod(fetch);
 
-    if (_theme === 'dark') {
-      enableDarkMode({});
-    } else if (_theme === 'light') {
-      disableDarkMode();
-    } else {
-      followSystemColorScheme({});
-    }
+    // if (_theme === 'dark') {
+    //   enableDarkMode({});
+    // } else if (_theme === 'light') {
+    //   disableDarkMode();
+    // } else {
+    //   followSystemColorScheme({});
+    // }
     reloadTheme();
   };
 

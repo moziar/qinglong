@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ProLayout, { PageLoading } from '@ant-design/pro-layout';
-import * as DarkReader from '@umijs/ssr-darkreader';
+// import * as DarkReader from '@umijs/ssr-darkreader';
 import defaultProps from './defaultProps';
-import { Link, history } from 'umi';
+import { Link, history, Outlet, useOutletContext, useLocation } from 'umi';
 import {
   LogoutOutlined,
   MenuFoldOutlined,
@@ -21,7 +21,9 @@ import SockJS from 'sockjs-client';
 import * as Sentry from '@sentry/react';
 import { init } from '../utils/init';
 
-export default function (props: any) {
+export default function () {
+  const props = useOutletContext();
+  const location = useLocation();
   const ctx = useCtx();
   const { theme, reloadTheme } = useTheme();
   const [user, setUser] = useState<any>({});
@@ -30,13 +32,13 @@ export default function (props: any) {
   const ws = useRef<any>(null);
   const [socketMessage, setSocketMessage] = useState<any>();
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    enable: enableDarkMode,
-    disable: disableDarkMode,
-    exportGeneratedCSS: collectCSS,
-    setFetchMethod,
-    auto: followSystemColorScheme,
-  } = DarkReader || {};
+  // const {
+  //   enable: enableDarkMode,
+  //   disable: disableDarkMode,
+  //   exportGeneratedCSS: collectCSS,
+  //   setFetchMethod,
+  //   auto: followSystemColorScheme,
+  // } = DarkReader || {};
 
   const logout = () => {
     request.post(`${config.apiPrefix}user/logout`).then(() => {
@@ -73,7 +75,7 @@ export default function (props: any) {
       .then(({ code, data }) => {
         if (code === 200 && data.username) {
           setUser(data);
-          if (props.location.pathname === '/') {
+          if (location.pathname === '/') {
             history.push('/crontab');
           }
         } else {
@@ -94,7 +96,7 @@ export default function (props: any) {
     if (systemInfo && systemInfo.isInitialized && !user) {
       getUser();
     }
-  }, [props.location.pathname]);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!systemInfo) {
@@ -117,21 +119,21 @@ export default function (props: any) {
     const _theme = localStorage.getItem('qinglong_dark_theme') || 'auto';
     if (typeof window === 'undefined') return;
     if (typeof window.matchMedia === 'undefined') return;
-    if (!DarkReader) {
-      return () => null;
-    }
-    setFetchMethod(fetch);
+    // if (!DarkReader) {
+    //   return () => null;
+    // }
+    // setFetchMethod(fetch);
 
-    if (_theme === 'dark') {
-      enableDarkMode({});
-    } else if (_theme === 'light') {
-      disableDarkMode();
-    } else {
-      followSystemColorScheme({});
-    }
+    // if (_theme === 'dark') {
+    //   enableDarkMode({});
+    // } else if (_theme === 'light') {
+    //   disableDarkMode();
+    // } else {
+    //   followSystemColorScheme({});
+    // }
 
     return () => {
-      disableDarkMode();
+      // disableDarkMode();
     };
   }, []);
 
@@ -184,19 +186,27 @@ export default function (props: any) {
   }, []);
 
   if (
-    ['/login', '/initialization', '/error'].includes(props.location.pathname)
+    ['/login', '/initialization', '/error'].includes(location.pathname)
   ) {
     document.title = `${
-      (config.documentTitleMap as any)[props.location.pathname]
+      (config.documentTitleMap as any)[location.pathname]
     } - 控制面板`;
     if (
       systemInfo?.isInitialized &&
-      props.location.pathname === '/initialization'
+      location.pathname === '/initialization'
     ) {
       history.push('/crontab');
     }
 
-    if (systemInfo || props.location.pathname === '/error') {
+    if (systemInfo || location.pathname === '/error') {
+      return (<Outlet context={{
+        ...ctx,
+        theme,
+        user,
+        reloadUser,
+        reloadTheme,
+        ws: ws.current,
+      }}  />)
       return React.Children.map(props.children, (child) => {
         return React.cloneElement(child, {
           ...ctx,
@@ -227,7 +237,7 @@ export default function (props: any) {
     <PageLoading />
   ) : (
     <ProLayout
-      selectedKeys={[props.location.pathname]}
+      selectedKeys={[location.pathname]}
       loading={loading}
       ErrorBoundary={Sentry.ErrorBoundary}
       logo={<Image preview={false} src="http://qn.whyour.cn/logo.png" />}
@@ -319,8 +329,17 @@ export default function (props: any) {
         </span>
       )}
       {...defaultProps}
-    >
-      {React.Children.map(props.children, (child) => {
+      >
+        <Outlet context={{
+        ...ctx,
+        theme,
+        user,
+        reloadUser,
+        reloadTheme,
+        socketMessage,
+      }}  />
+      
+      {/* {React.Children.map(props.children, (child) => {
         return React.cloneElement(child, {
           ...ctx,
           theme,
@@ -329,7 +348,7 @@ export default function (props: any) {
           reloadTheme,
           socketMessage,
         });
-      })}
+      })} */}
     </ProLayout>
   );
 }

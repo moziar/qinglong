@@ -2,19 +2,14 @@ import { defineConfig } from 'umi';
 const CompressionPlugin = require('compression-webpack-plugin');
 
 export default defineConfig({
+  antd: {
+    import: true,
+    dark: true,
+  },
   hash: true,
   layout: false,
   outputPath: 'static/dist',
-  nodeModulesTransform: {
-    type: 'none',
-  },
-  fastRefresh: {},
-  esbuild: {},
-  webpack5: {},
-  dynamicImport: {
-    loading: '@/components/pageLoading',
-  },
-  favicon: '/images/g5.ico',
+  fastRefresh: true,
   proxy: {
     '/api/public': {
       target: 'http://127.0.0.1:5400/',
